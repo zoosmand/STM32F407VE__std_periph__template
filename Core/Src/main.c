@@ -18,7 +18,6 @@ uint32_t seconds          = 0;
 uint32_t minutes          = 0;
 uint32_t _EREG_           = 0;
 uint32_t delay_tmp        = 0;
-uint32_t check            = 0;
 uint32_t SystemCoreClock  = 16000000;
 
 /* Private variables ---------------------------------------------------------*/
@@ -186,17 +185,11 @@ void SystemInit(void) {
 
   /* SysCfg */
   PREG_SET(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN_Pos);
-  check = 0;
-  while (!check) {
-    check = PREG_CHECK(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN_Pos);
-  }
+  while (!(PREG_CHECK(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN_Pos)));
 
   /* PWR */
   PREG_SET(RCC->APB1ENR, RCC_APB1ENR_PWREN_Pos);
-  check = 0;
-  while (!check) {
-    check = PREG_CHECK(RCC->APB1ENR, RCC_APB1ENR_PWREN_Pos);
-  }
+  while (!(PREG_CHECK(RCC->APB1ENR, RCC_APB1ENR_PWREN_Pos)))
 
   /* FLASH_IRQn interrupt configuration */
   NVIC_SetPriority(FLASH_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
@@ -205,9 +198,6 @@ void SystemInit(void) {
   /* RCC_IRQn interrupt configuration */
   NVIC_SetPriority(RCC_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
   NVIC_EnableIRQ(RCC_IRQn);
-
-
-
 
 
   MODIFY_REG(FLASH->ACR, FLASH_ACR_LATENCY, FLASH_ACR_LATENCY_5WS);
@@ -220,17 +210,11 @@ void SystemInit(void) {
 
    /* HSE enable and wait till it's ready */
   PREG_SET(RCC->CR, RCC_CR_HSEON_Pos);
-  check = 0;
-  while(check) {
-    check = PREG_CHECK(RCC->CR, RCC_CR_HSERDY_Pos);
-  }
+  while(!(PREG_CHECK(RCC->CR, RCC_CR_HSERDY_Pos)));
   
   /* LSI enable and wait till it's ready */
   PREG_SET(RCC->CSR, RCC_CSR_LSION_Pos);
-  check = 0;
-  while(check) {
-    check = PREG_CHECK(RCC->CSR, RCC_CSR_LSIRDY_Pos);
-  }
+  while(!(PREG_CHECK(RCC->CSR, RCC_CSR_LSIRDY_Pos)));
 
   /* Backup registers enable access */
   PREG_SET(PWR->CR, PWR_CR_DBP_Pos);
@@ -241,10 +225,7 @@ void SystemInit(void) {
   
   /* LSE enable and wait till it's ready */
   PREG_SET(RCC->BDCR, RCC_BDCR_LSEON_Pos);
-  check = 0;
-  while(check) {
-    check = PREG_CHECK(RCC->CSR, RCC_BDCR_LSERDY_Pos);
-  }
+  while(!(PREG_CHECK(RCC->BDCR, RCC_BDCR_LSERDY_Pos)));
   // while(!(READ_BIT(RCC->BDCR, RCC_BDCR_LSERDY) == (RCC_BDCR_LSERDY)));
 
   /* RTC source is LSE */
@@ -260,10 +241,7 @@ void SystemInit(void) {
   
   /* PLL enable and wait till it's ready */
   PREG_SET(RCC->CR, RCC_CR_PLLON_Pos);
-  check = 0;
-  while (check) {
-    check = PREG_CHECK(RCC->CR, RCC_CR_PLLRDY_Pos);
-  }
+  while (!(PREG_CHECK(RCC->CR, RCC_CR_PLLRDY_Pos)));
 
 
   /* AHB isn't divided */

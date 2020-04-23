@@ -13,6 +13,8 @@
 #ifndef __MAIN_H
 #define __MAIN_H
 
+#define SWO_ITM
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -36,7 +38,6 @@ extern uint32_t millis;
 extern uint32_t seconds;
 extern uint32_t minutes;
 extern uint32_t _EREG_;
-extern uint32_t check;
 extern uint32_t SystemCoreClock;
 
 /* Exported constants --------------------------------------------------------*/
@@ -70,6 +71,8 @@ extern uint32_t SystemCoreClock;
 extern void Delay_Handler(uint32_t delay);
 extern void Delay(uint32_t delay);
 extern void Cron_Handler(void);
+extern void Set_BitBandVal(uint32_t addr, uint32_t key);
+extern uint32_t Get_BitBandVal(uint32_t addr);
 
 
 #ifdef __cplusplus

@@ -60,7 +60,8 @@ struct __FILE {
 
 #define PREG_SET(registry, key)                                 SET_PERIPH_BB_VAL((uint32_t)&registry, 0, key, 1)
 #define PREG_CLR(registry, key)                                 SET_PERIPH_BB_VAL((uint32_t)&registry, 0, key, 0)
-#define PREG_CHECK(registry, key)                               (GET_PERIPH_BB_VAL((uint32_t)&registry, 0, key))
+// #define PREG_CHECK(registry, key)                               (GET_PERIPH_BB_VAL((uint32_t)&registry, 0, key))
+#define PREG_CHECK(registry, key)                               (Get_BitBandVal(GET_PERIPH_BB_ADDR((uint32_t)&registry, 0, key)))
 
 #define BIT_2_0(per)        (per * 2U)
 #define BIT_2_1(per)        (per * 2U + 1U)
