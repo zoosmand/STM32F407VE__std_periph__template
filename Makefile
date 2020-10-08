@@ -36,7 +36,8 @@ BUILD_DIR = build
 C_SOURCES =  \
 Core/Src/main.c \
 Core/Src/common.c \
-Core/Src/stm32f4xx_it.c
+Core/Src/stm32f4xx_it.c \
+Core/Src/led.c
 
 # ASM sources
 ASM_SOURCES =  \
