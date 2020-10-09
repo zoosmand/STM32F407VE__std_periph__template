@@ -30,7 +30,7 @@ __STATIC_INLINE void _putc(uint8_t ch);
 /**
   * @brief  This function is executed in case of error occurrence.
   * @param  None
-  * @retval None
+  * @return None
   */
 void Error_Handler(void) {
   while (1) {
@@ -51,7 +51,7 @@ void Error_Handler(void) {
   * @brief  Sends a symbol into ITM channel. It could be cought with SWO pin on an MC. 
   * @param ch: a symbol to be output
   * @param channel: number of an ITM channel
-  * @retval the same symbol 
+  * @return the same symbol 
   */
 __STATIC_INLINE uint32_t ITM_SendCharChannel(uint32_t ch, uint32_t channel) {
    /* ITM enabled and ITM Port enabled */
@@ -72,7 +72,7 @@ __STATIC_INLINE uint32_t ITM_SendCharChannel(uint32_t ch, uint32_t channel) {
   * @param device: a pointer USART_TypeDef
   * @param ch: a symbol to be output
   * @param check: a pointer to a BitBand check bit
-  * @retval none: 
+  * @return none: 
   */
 __STATIC_INLINE void _putc(uint8_t ch) {
   if (ch == '\n') _putc('\r');
@@ -83,10 +83,7 @@ __STATIC_INLINE void _putc(uint8_t ch) {
 
   #ifdef SWO_USART
     USART1->DR = ch;
-    check = 0;
-    while (!check) {
-      check = PREG_CHECK(USART1->SR, USART_SR_TXE_Pos);
-    }
+    while (!PREG_CHECK(USART1->SR, USART_SR_TXE_Pos));
   #endif
 }
 
@@ -98,7 +95,7 @@ __STATIC_INLINE void _putc(uint8_t ch) {
   * @param file: IO file
   * @param ptr: pointer to a char(symbol) array
   * @param len: length oa the array
-  * @retval length of the array 
+  * @return length of the array 
   */
 int _write(int32_t file, char *ptr, int32_t len) {
   // static uint32_t check = 0;
@@ -118,7 +115,7 @@ int _write(int32_t file, char *ptr, int32_t len) {
   *         where the assert_param error has occurred.
   * @param  file: pointer to the source file name
   * @param  line: assert_param error line source number
-  * @retval None
+  * @return None
   */
 void assert_failed(uint8_t *file, uint32_t line) { 
   printf("Wrong parameters value: file %s on line %d\n", file, line);

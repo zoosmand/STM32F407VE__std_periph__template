@@ -14,6 +14,7 @@
 #define __MAIN_H
 
 #define SWO_ITM
+// #define SWO_USART
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,6 +31,7 @@ extern "C" {
 #include "common.h"
 #include "stm32f4xx_it.h"
 #include "led.h"
+#include "usart.h"
 
 /* Global typedef ------------------------------------------------------------*/
 struct __FILE {

@@ -45,7 +45,7 @@ static void Flags_Handler(void);
 
 /**
   * @brief  The application entry point.
-  * @retval int
+  * @return int
   */
 int main(void) {
   while (1) {
@@ -143,6 +143,12 @@ void Flags_Handler(void){
     // BasicTimer_FromIT_Handler(TIM7);
     FLAG_CLR(_EREG_, _BT7F_);
   }
+
+  /* USART1 action */
+  if (FLAG_CHECK(_USARTREG_, _USART1_RXAF_)) {
+    USART1_RX_Handler();
+    FLAG_CLR(_USARTREG_, _USART1_RXAF_);
+  }
 }
 
 
@@ -156,7 +162,7 @@ void Flags_Handler(void){
 
 /**
   * @brief  Reset of all peripherals, Initializes the Flash interface and the Systick.
-  * @retval None
+  * @return None
   */
 void SystemInit(void) {
 
@@ -334,6 +340,9 @@ void SystemInit(void) {
   
   /* LED */
   LED_Init();
+
+  /* USART1 */ 
+  USART1_Init();
 
 
 }

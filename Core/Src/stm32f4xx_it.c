@@ -113,3 +113,12 @@ void SysTick_Handler(void) {
 void RCC_IRQHandler(void) {
   //
 }
+
+/**
+  * @brief This function handles USART1 global interrupt.
+  */
+void USART1_IRQHandler(void) {
+  PREG_CLR(USART1->SR, USART_SR_RXNE_Pos);
+  FLAG_SET(_USARTREG_, _USART1_RXAF_);
+}
+

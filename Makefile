@@ -37,7 +37,8 @@ C_SOURCES =  \
 Core/Src/main.c \
 Core/Src/common.c \
 Core/Src/stm32f4xx_it.c \
-Core/Src/led.c
+Core/Src/led.c \
+Core/Src/usart.c
 
 # ASM sources
 ASM_SOURCES =  \
