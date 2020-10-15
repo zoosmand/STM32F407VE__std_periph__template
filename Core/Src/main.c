@@ -16,7 +16,7 @@ uint32_t sysQuantum       = 0U;
 uint32_t millis           = 0U;
 uint32_t seconds          = 0U;
 uint32_t minutes          = 0U;
-uint32_t _EREG_           = 0U;
+uint32_t _GLOBALREG_      = 0U;
 uint32_t delay_tmp        = 0U;
 uint32_t SystemCoreClock  = 16000000U;
 RCC_ClocksTypeDef RccClocks;
@@ -48,14 +48,14 @@ static void Flags_Handler(void);
   * @return int
   */
 int main(void) {
+  Delay(500);
+
   while (1) {
     Delay_Handler(0);
     Cron_Handler();
     Flags_Handler();
   }
 }
-
-
 
 
 
@@ -95,7 +95,7 @@ void Cron_Handler() {
   }
   // !!!!!!!!! The bug!!!!!!!!
   delay_tmp = 0;
-  FLAG_CLR(_EREG_, _DELAYF_);
+  FLAG_CLR(_GLOBALREG_, _DELAYF_);
 }
 
 
@@ -121,8 +121,10 @@ static void CronSeconds_Handler(void) {
   //
   WRITE_REG(IWDG->KR, IWDG_KEY_RELOAD);
   printf("test\n");
-  LED_Blink(LED0_Port, LED0_Pin_Pos);
-  LED_Blink(LED1_Port, LED1_Pin_Pos);
+  // LED_Blink(LED0_Port, LED0_Pin_Pos);
+  // LED_Blink(LED1_Port, LED1_Pin_Pos);
+  // W25qxx_Init();
+  Display_Handler(ILI9341);
 }
 
 // ---- Minutes ---- //
@@ -139,16 +141,46 @@ static void CronMinutes_Handler(void) {
 /*                                     FLAGS                                    */
 /********************************************************************************/
 void Flags_Handler(void){
-  if (FLAG_CHECK(_EREG_, _BT7F_)) {
-    // BasicTimer_FromIT_Handler(TIM7);
-    FLAG_CLR(_EREG_, _BT7F_);
-  }
+  // if (!(FLAG_CHECK(_GLOBALREG_, _DELAYF_))) {
+  //   // FLAG_CLR(_GLOBALREG_, _DELAYF_);
+  // }
 
   /* USART1 action */
   if (FLAG_CHECK(_USARTREG_, _USART1_RXAF_)) {
     USART1_RX_Handler();
     FLAG_CLR(_USARTREG_, _USART1_RXAF_);
   }
+
+  /* RTC Alarm A action */
+  if (FLAG_CHECK(_RTCREG_, _ALAF_)) {
+    RTC_Alarm_Handler('A');
+    FLAG_CLR(_RTCREG_, _ALAF_);
+  }
+
+  /* RTC Alarm B action */
+  if (FLAG_CHECK(_RTCREG_, _ALBF_)) {
+    RTC_Alarm_Handler('B');
+    FLAG_CLR(_RTCREG_, _ALBF_);
+  }
+
+  /* Wake-Up button action */
+  if (FLAG_CHECK(_EXTIREG_, _WUBAF_)) {
+    WakeUp_Button_Handler();
+    FLAG_CLR(_EXTIREG_, _WUBAF_);
+  }
+
+  /* K0 button action */
+  if (FLAG_CHECK(_EXTIREG_, _K0BAF_)) {
+    K0_Button_Handler();
+    FLAG_CLR(_EXTIREG_, _K0BAF_);
+  }
+
+  /* K1 button action */
+  if (FLAG_CHECK(_EXTIREG_, _K1BAF_)) {
+    K1_Button_Handler();
+    FLAG_CLR(_EXTIREG_, _K1BAF_);
+  }
+
 }
 
 
@@ -289,12 +321,12 @@ void SystemInit(void) {
 
   /*****************************************************************************************/
   /* IWDG */
-  WRITE_REG(IWDG->KR, IWDG_KEY_ENABLE);
-  WRITE_REG(IWDG->KR, IWDG_KEY_WR_ACCESS_ENABLE);
-  WRITE_REG(IWDG->PR, IWDG_PR_PR & (IWDG_PR_PR_2 | IWDG_PR_PR_0)); /*!< Divider by 128 */
-  WRITE_REG(IWDG->RLR, IWDG_RLR_RL & (625 - 1));
-  while (!(PREG_CHECK(IWDG->SR, IWDG_SR_PVU_Pos)));
-  WRITE_REG(IWDG->KR, IWDG_KEY_RELOAD);
+  // WRITE_REG(IWDG->KR, IWDG_KEY_ENABLE);
+  // WRITE_REG(IWDG->KR, IWDG_KEY_WR_ACCESS_ENABLE);
+  // WRITE_REG(IWDG->PR, IWDG_PR_PR & (IWDG_PR_PR_2 | IWDG_PR_PR_0)); /*!< Divider by 128 */
+  // WRITE_REG(IWDG->RLR, IWDG_RLR_RL & (625 - 1));
+  // while (!(PREG_CHECK(IWDG->SR, IWDG_SR_PVU_Pos)));
+  // WRITE_REG(IWDG->KR, IWDG_KEY_RELOAD);
 
 
 
@@ -302,33 +334,32 @@ void SystemInit(void) {
   /* APB1 */
   SET_BIT(RCC->APB1ENR, (
       RCC_APB1ENR_TIM7EN
-    // | RCC_APB1ENR_I2C3EN
+    | RCC_APB1ENR_SPI2EN
+    | RCC_APB1ENR_SPI3EN
   ));
 
   /* AHB1 */
   SET_BIT(RCC->AHB1ENR, ( 
       RCC_AHB1ENR_GPIOAEN
     | RCC_AHB1ENR_GPIOBEN
-    // | RCC_AHB1ENR_GPIOCEN
-    // | RCC_AHB1ENR_GPIODEN
-    // | RCC_AHB1ENR_GPIOEEN
-    // | RCC_AHB1ENR_GPIOFEN
-    // | RCC_AHB1ENR_GPIOGEN
-    // | RCC_AHB1ENR_GPIOHEN
+    | RCC_AHB1ENR_GPIOCEN
+    | RCC_AHB1ENR_GPIODEN
+    | RCC_AHB1ENR_GPIOEEN
     | RCC_AHB1ENR_CRCEN
   ));
 
   /* APB2 */
   SET_BIT(RCC->APB2ENR, (
       RCC_APB2ENR_USART1EN
+    // | RCC_APB2ENR_SPI1EN
   ));
 
-  // /* AHB3 */
-  // SET_BIT(RCC->AHB3ENR, (
-  //     RCC_AHB3ENR_FMCEN
-  // ));
-  // /* Wait for FMC starts */
-  // while (!(PREG_CHECK(RCC->AHB3ENR, RCC_AHB3ENR_FMCEN_Pos)));
+  /* AHB3 */
+  SET_BIT(RCC->AHB3ENR, (
+      RCC_AHB3ENR_FSMCEN
+  ));
+  /* Wait for FMC starts */
+  while (!(PREG_CHECK(RCC->AHB3ENR, RCC_AHB3ENR_FSMCEN_Pos)));
 
 
 
@@ -336,13 +367,34 @@ void SystemInit(void) {
   /************************************************************************************************/
   /************************************************************************************************/
   /************************************************************************************************/
-  Delay(500);
   
   /* LED */
   LED_Init();
 
+  /* EXTI */
+  EXTI_Init();
+
   /* USART1 */ 
   USART1_Init();
+
+  /* RTC */
+  RTC_Init();
+
+  /* Basic Timer7 */
+  BasicTimer7_Init();
+
+  /* SPI */
+  SPI_Init(SPI2);
+  SPI_Init(SPI3);
+
+  /* EEPROM */
+  W25qxx_Init();
+
+  /* FSMC */
+  FSMC_Init();
+
+  /* Display*/
+  ILI9341_Init();
 
 
 }

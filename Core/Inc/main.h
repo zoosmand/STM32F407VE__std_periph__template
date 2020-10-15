@@ -24,6 +24,8 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <time.h>
+
 
 #include "stm32f4xx.h"
 
@@ -32,6 +34,15 @@ extern "C" {
 #include "stm32f4xx_it.h"
 #include "led.h"
 #include "usart.h"
+#include "rtc.h"
+#include "exti.h"
+#include "tim.h"
+#include "spi.h"
+#include "fsmc.h"
+#include "fonts.h"
+#include "display.h"
+#include "ili9341.h"
+#include "w25qxx.h"
 
 /* Global typedef ------------------------------------------------------------*/
 struct __FILE {
@@ -61,7 +72,7 @@ extern uint32_t sysQuantum;
 extern uint32_t millis;
 extern uint32_t seconds;
 extern uint32_t minutes;
-extern uint32_t _EREG_;
+extern uint32_t _GLOBALREG_;
 extern uint32_t SystemCoreClock;
 extern RCC_ClocksTypeDef RccClocks;
 
@@ -72,7 +83,6 @@ extern RCC_ClocksTypeDef RccClocks;
 /* Private defines -----------------------------------------------------------*/
 // _EREG_ Flags    
 #define _DELAYF_  0 // Delay Flag
-#define _BT7F_    1 // Basic Timer7 Flag
 
 /* Memory marker to CCRAM */
 #define CCMRAM  __attribute__((section(".ccmram")))
@@ -80,7 +90,7 @@ extern RCC_ClocksTypeDef RccClocks;
 
 /* Exported functions prototypes ---------------------------------------------*/
 extern void Delay_Handler(uint32_t delay);
-extern void Delay(uint32_t delay);
+// extern void Delay(uint32_t delay);
 extern void Cron_Handler(void);
 extern void Set_BitBandVal(uint32_t addr, uint32_t key);
 extern uint32_t Get_BitBandVal(uint32_t addr);

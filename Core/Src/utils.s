@@ -1,7 +1,7 @@
 .syntax unified
 
 .global Delay_Handler
-.global Delay
+.weak Delay
 .global Set_BitBandVal
 .global Get_BitBandVal
 

@@ -43,6 +43,25 @@ void Error_Handler(void) {
 
 
 
+/**
+  * @brief  Simple ms delay
+  * @param  delay: milliseconds in a delay
+  * @return None
+  */
+void Delay(uint32_t delay) {
+  __IO uint64_t tmp = 12800 * delay;
+  while (tmp--);
+}
+
+
+
+
+
+
+
+
+
+
 
 /********************************************************************************/
 /*                         printf() output supply block                         */

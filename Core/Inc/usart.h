@@ -25,14 +25,16 @@ extern uint32_t _USARTREG_;
 
 
 /* Private defines -----------------------------------------------------------*/
-#define TX1_Pin             GPIO_PIN_9
-#define TX1_Pin_Pos         GPIO_PIN_9_Pos
-#define RX1_Pin             GPIO_PIN_10
-#define RX1_Pin_Pos         GPIO_PIN_10_Pos
-#define USART1_Port         GPIOA
+#define USART_1_TX_Pin              GPIO_PIN_9
+#define USART_1_TX_Pin_Pos          GPIO_PIN_9_Pos
+#define USART_1_TX_Pin_Mask         GPIO_PIN_9_Mask
+#define USART_1_RX_Pin              GPIO_PIN_10
+#define USART_1_RX_Pin_Pos          GPIO_PIN_10_Pos
+#define USART_1_RX_Pin_Mask         GPIO_PIN_10_Mask
+#define USART_1_Port                GPIOA
 
-#define RXBUF_LEN           64
-#define RXBUF_MASK          (RXBUF_LEN - 1)
+#define RXBUF_LEN                   64
+#define RXBUF_MASK                  (RXBUF_LEN - 1)
 
 
 // USART Registry Flags

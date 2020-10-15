@@ -148,7 +148,8 @@
 /* Exported macro ------------------------------------------------------------*/
 #define FLAG_SET(registry, flag)                                SET_SRAM_BB_VAL((uint32_t)&registry, flag, 1)
 #define FLAG_CLR(registry, flag)                                SET_SRAM_BB_VAL((uint32_t)&registry, flag, 0)
-#define FLAG_CHECK(registry, flag)                              (GET_SRAM_BB_VAL((uint32_t)&registry, flag))
+// #define FLAG_CHECK(registry, flag)                              (GET_SRAM_BB_VAL((uint32_t)&registry, flag))
+#define FLAG_CHECK(registry, flag)                              (Get_BitBandVal(GET_SRAM_BB_ADDR((uint32_t)&registry, flag)))
 
 #define PIN_H(port, pinSource)                                  SET_PERIPH_BB_VAL((uint32_t)port, GPIO_BSRR_Offset, pinSource, 1)
 #define PIN_L(port, pinSource)                                  SET_PERIPH_BB_VAL((uint32_t)port, GPIO_BSRR_Offset, (pinSource + 16U), 1)
@@ -170,6 +171,7 @@
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
+extern void Delay(uint32_t delay);
 
 
 

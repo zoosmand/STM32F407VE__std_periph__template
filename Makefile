@@ -38,7 +38,19 @@ Core/Src/main.c \
 Core/Src/common.c \
 Core/Src/stm32f4xx_it.c \
 Core/Src/led.c \
-Core/Src/usart.c
+Core/Src/usart.c \
+Core/Src/rtc.c \
+Core/Src/exti.c \
+Core/Src/tim.c \
+Core/Src/spi.c \
+Core/Src/fsmc.c \
+Core/Src/dot_5x7.c \
+Core/Src/dot_10x14.c \
+Core/Src/dot_15x21.c \
+Core/Src/dot_20x28.c \
+Core/Src/display.c \
+Core/Src/ili9341.c \
+Core/Src/w25qxx.c
 
 # ASM sources
 ASM_SOURCES =  \
